@@ -10,7 +10,7 @@ export default function Home() {
       {/* Hero Section */}
       <main className="flex flex-col items-center justify-center text-center py-32 px-6">
         <h2 className="text-4xl sm:text-5xl font-bold text-black dark:text-white mb-6">
-          Track Your Vehicle Maintenance with Ease
+          Track Your Vehicle Maintenance with Carcare
         </h2>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl">
           Autocare helps you monitor your vehicle’s service history, repair costs, and upcoming maintenance all in one place.
