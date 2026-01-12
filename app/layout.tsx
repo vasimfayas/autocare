@@ -7,7 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
      <body className="min-h-screen flex flex-col bg-zinc-50 dark:bg-gray-900 text-zinc-900 dark:text-white">
   <Navbar />
-  <main className="flex-grow">
+  <main className="flex-grow pt-14">
     {children}
   </main>
   <Footer />
