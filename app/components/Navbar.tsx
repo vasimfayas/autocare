@@ -55,7 +55,7 @@ export default function Navbar() {
     priority
   />
         <Link href="/" className="text-lg font-semibold tracking-tight">
-          Autocare
+          AUTOCARE
         </Link>
 
         {/* Desktop nav */}
