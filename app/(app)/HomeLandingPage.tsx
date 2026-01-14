@@ -11,8 +11,15 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "@/app/lib/firebase";
+import { signOut,onAuthStateChanged, User } from "firebase/auth";
+import { auth ,db } from "@/app/lib/firebase";
 
+
+export async function logout() {
+  await signOut(auth);
+  localStorage.clear();
+}
+const user = auth.currentUser;
 type Vehicle = {
   id: string;
   name: string;
@@ -64,6 +71,19 @@ function Icon({
 
 export default function HomeLandingPage() {
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+
+      // optional: if logged out, force to login
+      if (!u) router.replace("/login");
+    });
+
+    return () => unsub();
+  }, [router]);
+
+  const userName = user?.displayName || user?.email || "User";
 
   // Vehicles from DB
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -84,7 +104,7 @@ export default function HomeLandingPage() {
   const firstInputRef = useRef<HTMLInputElement | null>(null);
 
   // Replace with your auth user values
-  const userName = "Kaixa";
+  
   const notificationsCount = 2;
 
   // Read vehicles (real-time)
@@ -247,7 +267,7 @@ export default function HomeLandingPage() {
                 onClick={() => router.push("/profile")}
                 aria-label="Open profile"
               >
-                {initials(userName)}
+                {initials(userName ||'A')}
               </button>
 
               <div className="text-white">
@@ -259,14 +279,7 @@ export default function HomeLandingPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label="Search"
-                className="h-10 w-10 rounded-full bg-white/15 hover:bg-white/20 ring-1 ring-white/20 flex items-center justify-center text-white transition"
-                onClick={() => router.push("/search")}
-              >
-                <Icon>🔍</Icon>
-              </button>
+             
 
               <button
                 type="button"
@@ -280,6 +293,14 @@ export default function HomeLandingPage() {
                     {notificationsCount}
                   </span>
                 )}
+              </button>
+              <button
+                type="button"
+                aria-label="Logout"
+                className="h-10 w-10 rounded-full bg-white/15 hover:bg-white/20 ring-1 ring-white/20 flex items-center justify-center text-white transition"
+                onClick={logout}
+              >
+                <Icon>🚪</Icon>
               </button>
             </div>
           </div>

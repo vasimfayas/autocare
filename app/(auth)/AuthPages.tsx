@@ -120,7 +120,10 @@ export function LoginPage() {
       setSubmitting(false);
     }
   };
-
+  const handleGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-gray-950">
       {/* Top gradient */}
@@ -133,7 +136,7 @@ export function LoginPage() {
             Track your vehicles, services, documents, and expenses in one place.
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-zinc-50 dark:bg-gray-950 rounded-t-[32px]" />
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-zinc-50 dark:bg-gray-950 rounded-t-[32px]" />
       </div>
 
       <div className="mx-auto max-w-md px-4 pb-10">
@@ -158,7 +161,7 @@ export function LoginPage() {
           >
             Continue with Google
           </button>
-
+          
           <div className="flex items-center gap-3 my-5">
             <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
             <span className="text-xs text-zinc-500">OR</span>
