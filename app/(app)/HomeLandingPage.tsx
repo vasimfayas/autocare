@@ -19,7 +19,9 @@ export async function logout() {
   await signOut(auth);
   localStorage.clear();
 }
-const user = auth.currentUser;
+
+
+
 type Vehicle = {
   id: string;
   name: string;
@@ -84,7 +86,11 @@ export default function HomeLandingPage() {
   }, [router]);
 
   const userName = user?.displayName || user?.email || "User";
-
+  const [navPending, setNavPending] = useState<string | null>(null);
+  const go = (path: string, key: string) => {
+    setNavPending(key);
+    router.push(path);
+  };
   // Vehicles from DB
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loadingVehicles, setLoadingVehicles] = useState(true);
@@ -236,12 +242,12 @@ export default function HomeLandingPage() {
   };
 
   const menu = [
-    { label: "Service Logs", emoji: "🧾", onClick: () => router.push("/service-logs") },
-    { label: "Add Car", emoji: "➕", onClick: () => router.push("/vehicles/new") },
-    { label: "Statements", emoji: "📄", onClick: () => router.push("/statements") },
-    { label: "Documents", emoji: "📁", onClick: () => router.push("/documents") },
-    { label: "Chatbot", emoji: "🤖", onClick: () => router.push("/chatbot") },
-    { label: "Other", emoji: "⋯", onClick: () => router.push("/other") },
+    { key: "logs",label: "Service Logs", emoji: "🧾",path: "/service-logs" },
+    { key: "car",label: "Add Car", emoji: "➕",path:"/vehicles/new" },
+    { key: "statement",label: "Statements", emoji: "📄",path:"/statements" },
+    { key:"documents",label: "Documents", emoji: "📁",path:"/documents" },
+    { key:"chatbot",label: "Chatbot", emoji: "🤖",path:"/chatbot" },
+    { key:"garage",label: "Garage", emoji: "🏰",path:"/garage" },
   ];
 
   return (
@@ -306,21 +312,34 @@ export default function HomeLandingPage() {
           </div>
 
           {/* MENU GRID */}
-          <div className="mt-6 rounded-3xl bg-white dark:bg-gray-900 shadow-sm border border-white/30 dark:border-zinc-800 overflow-hidden">
+          <div className="
+  mt-6 rounded-3xl 
+  bg-white dark:bg-gray-900
+  border border-white/30 dark:border-zinc-800
+  shadow-[0_10px_25px_-8px_rgba(0,0,0,0.15)]
+  dark:shadow-[0_10px_25px_-8px_rgba(0,0,0,0.6)]
+  transform-gpu
+  transition-all duration-300 ease-out
+  hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.25)]
+  dark:hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.7)]
+  overflow-hidden
+">
             <div className="grid grid-cols-3">
               {menu.map((item, idx) => {
                 const isRightEdge = (idx + 1) % 3 === 0;
                 const isBottomRow = idx >= 3;
                 return (
                   <button
-                    key={item.label}
+                    key={item.key}
                     type="button"
-                    onClick={item.onClick}
+                    onClick={() => go(item.path, item.key)}
+                    disabled={!!navPending}
                     className={cn(
-                      "p-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition",
-                      !isRightEdge && "border-r border-zinc-100 dark:border-zinc-800",
-                      !isBottomRow && "border-b border-zinc-100 dark:border-zinc-800"
-                    )}
+                     "p-4 text-left transition active:scale-[0.98]",
+    "hover:bg-zinc-50 dark:hover:bg-zinc-800/50",
+    "disabled:opacity-70 disabled:cursor-not-allowed",
+    navPending === item.key && "bg-zinc-50 dark:bg-zinc-800/60"
+   )}
                   >
                     <div className="flex flex-col items-start gap-2">
                       <div className="h-10 w-10 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
@@ -329,6 +348,9 @@ export default function HomeLandingPage() {
                       <p className="text-sm font-semibold text-zinc-900 dark:text-white">
                         {item.label}
                       </p>
+                      {navPending === item.key && (
+      <span className="text-xs text-zinc-500 dark:text-zinc-300">Loading…</span>
+    )}
                     </div>
                   </button>
                 );
